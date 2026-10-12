@@ -1,0 +1,19 @@
+# Every change is reviewed by a maintainer.
+* @innerluxesdev
+
+# The reader of tables, the reading of the file, the search for keys and seeds, the columns and the key data elements, the
+# dates, the decimals, the checks, the points of the rule, the rules and the output decide every result and what is read
+# from the disk; changes need extra care.
+/src/csv.js @innerluxesdev
+/src/files.js @innerluxesdev
+/src/secrets.js @innerluxesdev
+/src/fields.js @innerluxesdev
+/src/dates.js @innerluxesdev
+/src/time.js @innerluxesdev
+/src/decimal.js @innerluxesdev
+/src/analyze.js @innerluxesdev
+/src/data.js @innerluxesdev
+/src/rules.js @innerluxesdev
+/src/check.js @innerluxesdev
+/src/report.js @innerluxesdev
+/research/ @innerluxesdev
