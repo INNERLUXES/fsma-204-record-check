@@ -1,0 +1,258 @@
+{
+  "tool": "fsma-204-record-check",
+  "version": "1.0.0",
+  "input": {
+    "file": "examples/good/records.csv",
+    "format": "CSV",
+    "bytes": 4820,
+    "lines": 15
+  },
+  "records": {
+    "rows": 14,
+    "skipped": 0,
+    "columns": 31,
+    "read": 31,
+    "unread": 0,
+    "lots": 5,
+    "types": [
+      {
+        "id": "harvesting",
+        "label": "harvesting",
+        "rows": 1,
+        "lots": 0
+      },
+      {
+        "id": "cooling",
+        "label": "cooling",
+        "rows": 1,
+        "lots": 0
+      },
+      {
+        "id": "initial_packing",
+        "label": "initial packing",
+        "rows": 3,
+        "lots": 3
+      },
+      {
+        "id": "first_land_based_receiving",
+        "label": "first land-based receiving",
+        "rows": 1,
+        "lots": 1
+      },
+      {
+        "id": "shipping",
+        "label": "shipping",
+        "rows": 3,
+        "lots": 2
+      },
+      {
+        "id": "receiving",
+        "label": "receiving",
+        "rows": 3,
+        "lots": 2
+      },
+      {
+        "id": "transformation",
+        "label": "making a new product",
+        "rows": 2,
+        "lots": 1
+      }
+    ],
+    "firstDate": "2101-03-01",
+    "lastDate": "2101-03-06"
+  },
+  "totals": {
+    "findings": 0,
+    "byLevel": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+    },
+    "hidden": 0
+  },
+  "rules": [
+    {
+      "id": "file-unreadable",
+      "level": "error",
+      "kind": "input",
+      "findings": 0
+    },
+    {
+      "id": "column-missing",
+      "level": "error",
+      "kind": "input",
+      "findings": 0
+    },
+    {
+      "id": "column-unknown",
+      "level": "warning",
+      "kind": "input",
+      "findings": 0
+    },
+    {
+      "id": "column-duplicate",
+      "level": "error",
+      "kind": "input",
+      "findings": 0
+    },
+    {
+      "id": "row-malformed",
+      "level": "error",
+      "kind": "input",
+      "findings": 0
+    },
+    {
+      "id": "secret-in-file",
+      "level": "error",
+      "kind": "input",
+      "findings": 0
+    },
+    {
+      "id": "event-type-unknown",
+      "level": "error",
+      "kind": "documented",
+      "findings": 0
+    },
+    {
+      "id": "kde-missing",
+      "level": "error",
+      "kind": "documented",
+      "findings": 0
+    },
+    {
+      "id": "kde-conditional-missing",
+      "level": "warning",
+      "kind": "documented",
+      "findings": 0
+    },
+    {
+      "id": "lot-code-at-harvest-or-cooling",
+      "level": "warning",
+      "kind": "documented",
+      "findings": 0
+    },
+    {
+      "id": "lot-code-new-at-shipping",
+      "level": "warning",
+      "kind": "documented",
+      "findings": 0
+    },
+    {
+      "id": "date-invalid",
+      "level": "error",
+      "kind": "documented",
+      "findings": 0
+    },
+    {
+      "id": "quantity-unit-missing",
+      "level": "error",
+      "kind": "documented",
+      "findings": 0
+    },
+    {
+      "id": "quantity-not-positive",
+      "level": "error",
+      "kind": "best practice",
+      "findings": 0
+    },
+    {
+      "id": "future-date",
+      "level": "error",
+      "kind": "best practice",
+      "findings": 0
+    },
+    {
+      "id": "dates-out-of-order",
+      "level": "warning",
+      "kind": "best practice",
+      "findings": 0
+    },
+    {
+      "id": "receiving-without-shipping",
+      "level": "info",
+      "kind": "best practice",
+      "findings": 0
+    },
+    {
+      "id": "shipping-without-receiving",
+      "level": "info",
+      "kind": "best practice",
+      "findings": 0
+    },
+    {
+      "id": "received-more-than-shipped",
+      "level": "warning",
+      "kind": "best practice",
+      "findings": 0
+    },
+    {
+      "id": "made-from-unknown-lot",
+      "level": "warning",
+      "kind": "best practice",
+      "findings": 0
+    },
+    {
+      "id": "duplicate-row",
+      "level": "warning",
+      "kind": "best practice",
+      "findings": 0
+    }
+  ],
+  "options": {
+    "minSeverity": "info",
+    "failOn": "error",
+    "now": "2101-03-10T12:00:00Z"
+  },
+  "findings": [],
+  "eventTypes": [
+    {
+      "id": "harvesting",
+      "label": "harvesting",
+      "rows": 1,
+      "lots": 0
+    },
+    {
+      "id": "cooling",
+      "label": "cooling",
+      "rows": 1,
+      "lots": 0
+    },
+    {
+      "id": "initial_packing",
+      "label": "initial packing",
+      "rows": 3,
+      "lots": 3
+    },
+    {
+      "id": "first_land_based_receiving",
+      "label": "first land-based receiving",
+      "rows": 1,
+      "lots": 1
+    },
+    {
+      "id": "shipping",
+      "label": "shipping",
+      "rows": 3,
+      "lots": 2
+    },
+    {
+      "id": "receiving",
+      "label": "receiving",
+      "rows": 3,
+      "lots": 2
+    },
+    {
+      "id": "transformation",
+      "label": "making a new product",
+      "rows": 2,
+      "lots": 1
+    }
+  ],
+  "notes": [],
+  "notice": "This report is an input to a review of traceability records against 21 CFR Part 1 Subpart S: not legal advice and not an FDA certification, and not a guarantee that the records are true or that a firm meets the rule.",
+  "result": {
+    "pass": true,
+    "failOn": "error",
+    "text": "PASS - no finding at or above error"
+  }
+}

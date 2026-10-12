@@ -1,0 +1,25 @@
+fsma-204-record-check checks
+
+  file-unreadable                 error    input          the file is not a table the reader can follow (a quote never closed, text after a closing quote, a cell too long, semicolons for commas), holds no event_type column or holds a header and no rows, so nothing in it was checked
+  column-missing                  error    input          a column that the rows of a kind of event need is not in the header at all, so the element cannot be given in any of those rows; it is reported once, at the header, and not for each row
+  column-unknown                  warning  input          a column the tool does not read, often a misspelt name; nothing under it was checked
+  column-duplicate                error    input          two columns of the header have the same name once case and separators are ignored; only the first is read
+  row-malformed                   error    input          a row with more or fewer cells than the header, which usually means a comma that is not in quotes; the row was left out of every other check
+  secret-in-file                  error    input          the file holds a private key, a seed or a mnemonic, under a column named for one or as a cell shaped like one; the tool never reads it and never shows it
+  event-type-unknown              error    documented     an event_type that is empty or is none of the seven critical tracking events of 1.1310: harvesting, cooling, initial packing, first land-based receiving, shipping, receiving and making a new product ("transformation" in the file); the row was left out of the element checks
+  kde-missing                     error    documented     a key data element that the section of the rule lists for the kind of event is empty or a placeholder such as n/a: the lot code, the product description, the quantity and unit, a location description of the right party, a date, the reference document type or number, and for making a new product the inputs; the message names the section
+  kde-conditional-missing         warning  documented     the field, growing area or container of a harvest or an initial packing is empty; the rule asks for it for produce and for aquacultured food, and the file does not say which food the row is about
+  lot-code-at-harvest-or-cooling  warning  documented     a row for harvesting or cooling holds a traceability lot code, though the rule assigns one at initial packing, first land-based receiving or making a new product, and sets no lot code for other activities
+  lot-code-new-at-shipping        warning  documented     a shipping row names the shipping location as the lot code source, but no row of the file assigns that lot code (initial packing, first land-based receiving, making a new product, or receiving); the rule says not to establish a new lot code when shipping
+  date-invalid                    error    documented     a cell of a date column that is not a date, or names a day that does not exist, or is written as a date of the United States; the date of the event is a key data element
+  quantity-unit-missing           error    documented     a quantity with no unit of measure, or a unit of measure with no quantity; the rule asks for the quantity and the unit together
+  quantity-not-positive           error    best practice  a quantity that is not a plain positive number: zero, negative, with a thousands separator, with an exponent or text
+  future-date                     error    best practice  a date later than the moment given with --now (a day alone is allowed one day more, for the time zones of the world); without --now the check does not run
+  dates-out-of-order              warning  best practice  the dates of one row come in the wrong order: harvest_date, cooling_date, receipt_date and event_date should not go back
+  receiving-without-shipping      info     best practice  a receiving row whose lot code is not shipped by any shipping row of the file; a note, because a file of one firm holds the receipts of food shipped by others
+  shipping-without-receiving      info     best practice  a shipping row whose lot code is not received by any receiving row of the file; a note, because the recipient keeps its own records
+  received-more-than-shipped      warning  best practice  the receiving rows of a lot code add up to more than the shipping rows of the same lot code in the same unit of measure
+  made-from-unknown-lot           warning  best practice  a row for making a new product names an input lot code that no row of the file holds
+  duplicate-row                   warning  best practice  a row whose cells are all the same as an earlier row, which counts one event twice
+
+A documented check rests on a section of 21 CFR Part 1 Subpart S, named in its message; a best practice check is this tool's own choice and says so in its message. An input check is about the file itself. None of it is legal advice or an FDA certification.

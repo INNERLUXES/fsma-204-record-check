@@ -1,0 +1,915 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "fsma-204-record-check",
+          "version": "1.0.0",
+          "informationUri": "https://github.com/INNERLUXES/fsma-204-record-check",
+          "rules": [
+            {
+              "id": "file-unreadable",
+              "name": "file-unreadable",
+              "shortDescription": {
+                "text": "the file is not a table the reader can follow (a quote never closed, text after a closing quote, a cell too long, semicolons for commas), holds no event_type column or holds a header and no rows, so nothing in it was checked"
+              },
+              "help": {
+                "text": "Save the records as CSV with commas or TSV with tabs, a header row and one row for each critical tracking event (docs/inputs.md); fix the line named. (input)"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "kind": "input"
+              }
+            },
+            {
+              "id": "column-missing",
+              "name": "column-missing",
+              "shortDescription": {
+                "text": "a column that the rows of a kind of event need is not in the header at all, so the element cannot be given in any of those rows; it is reported once, at the header, and not for each row"
+              },
+              "help": {
+                "text": "Add the column named to the spreadsheet and fill it for the rows that need it; docs/inputs.md lists every column. (input)"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "kind": "input"
+              }
+            },
+            {
+              "id": "column-unknown",
+              "name": "column-unknown",
+              "shortDescription": {
+                "text": "a column the tool does not read, often a misspelt name; nothing under it was checked"
+              },
+              "help": {
+                "text": "Correct the name to a column of docs/inputs.md, or leave the column in if it is for your own use. (input)"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "kind": "input"
+              }
+            },
+            {
+              "id": "column-duplicate",
+              "name": "column-duplicate",
+              "shortDescription": {
+                "text": "two columns of the header have the same name once case and separators are ignored; only the first is read"
+              },
+              "help": {
+                "text": "Keep one column of each name. (input)"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "kind": "input"
+              }
+            },
+            {
+              "id": "row-malformed",
+              "name": "row-malformed",
+              "shortDescription": {
+                "text": "a row with more or fewer cells than the header, which usually means a comma that is not in quotes; the row was left out of every other check"
+              },
+              "help": {
+                "text": "Put a cell that holds a comma, a tab or a line end in double quotes, and write a quote inside it as two quotes. (input)"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "kind": "input"
+              }
+            },
+            {
+              "id": "secret-in-file",
+              "name": "secret-in-file",
+              "shortDescription": {
+                "text": "the file holds a private key, a seed or a mnemonic, under a column named for one or as a cell shaped like one; the tool never reads it and never shows it"
+              },
+              "help": {
+                "text": "Remove the value from the file and from wherever the file was copied, treat it as exposed and move what it controls to a new key. A traceability record names food, lots, places and documents, never the key of an account. (input)"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "kind": "input"
+              }
+            },
+            {
+              "id": "event-type-unknown",
+              "name": "event-type-unknown",
+              "shortDescription": {
+                "text": "an event_type that is empty or is none of the seven critical tracking events of 1.1310: harvesting, cooling, initial packing, first land-based receiving, shipping, receiving and making a new product (\"transformation\" in the file); the row was left out of the element checks"
+              },
+              "help": {
+                "text": "Write one of \"harvesting\", \"cooling\", \"initial_packing\", \"first_land_based_receiving\", \"shipping\", \"receiving\" or \"transformation\" in the event_type column. (documented)"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "kind": "documented"
+              }
+            },
+            {
+              "id": "kde-missing",
+              "name": "kde-missing",
+              "shortDescription": {
+                "text": "a key data element that the section of the rule lists for the kind of event is empty or a placeholder such as n/a: the lot code, the product description, the quantity and unit, a location description of the right party, a date, the reference document type or number, and for making a new product the inputs; the message names the section"
+              },
+              "help": {
+                "text": "Fill the element named in the cell named, from the business record the row comes from; docs/inputs.md says which column holds each element. (documented)"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "kind": "documented"
+              }
+            },
+            {
+              "id": "kde-conditional-missing",
+              "name": "kde-conditional-missing",
+              "shortDescription": {
+                "text": "the field, growing area or container of a harvest or an initial packing is empty; the rule asks for it for produce and for aquacultured food, and the file does not say which food the row is about"
+              },
+              "help": {
+                "text": "Name the field, growing area or container as the grower does; leave it empty only for a food that is neither produce nor aquacultured. (documented)"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "kind": "documented"
+              }
+            },
+            {
+              "id": "lot-code-at-harvest-or-cooling",
+              "name": "lot-code-at-harvest-or-cooling",
+              "shortDescription": {
+                "text": "a row for harvesting or cooling holds a traceability lot code, though the rule assigns one at initial packing, first land-based receiving or making a new product, and sets no lot code for other activities"
+              },
+              "help": {
+                "text": "Leave the lot code out of the harvesting and cooling rows; the packer assigns it when it initially packs the food. (documented)"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "kind": "documented"
+              }
+            },
+            {
+              "id": "lot-code-new-at-shipping",
+              "name": "lot-code-new-at-shipping",
+              "shortDescription": {
+                "text": "a shipping row names the shipping location as the lot code source, but no row of the file assigns that lot code (initial packing, first land-based receiving, making a new product, or receiving); the rule says not to establish a new lot code when shipping"
+              },
+              "help": {
+                "text": "Ship the food under the lot code it already has, and add the row of the event that assigned it; if the lot code came from elsewhere, name that place as the lot code source. (documented)"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "kind": "documented"
+              }
+            },
+            {
+              "id": "date-invalid",
+              "name": "date-invalid",
+              "shortDescription": {
+                "text": "a cell of a date column that is not a date, or names a day that does not exist, or is written as a date of the United States; the date of the event is a key data element"
+              },
+              "help": {
+                "text": "Write the date as YYYY-MM-DD: four digits for the year, two for the month and two for the day. (documented)"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "kind": "documented"
+              }
+            },
+            {
+              "id": "quantity-unit-missing",
+              "name": "quantity-unit-missing",
+              "shortDescription": {
+                "text": "a quantity with no unit of measure, or a unit of measure with no quantity; the rule asks for the quantity and the unit together"
+              },
+              "help": {
+                "text": "Give the unit of measure with the quantity, such as cases, pounds or kg, and the quantity with the unit. (documented)"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "kind": "documented"
+              }
+            },
+            {
+              "id": "quantity-not-positive",
+              "name": "quantity-not-positive",
+              "shortDescription": {
+                "text": "a quantity that is not a plain positive number: zero, negative, with a thousands separator, with an exponent or text"
+              },
+              "help": {
+                "text": "Write the quantity as a plain number above zero, such as 25 or 12.5, with no unit in the cell. (best practice)"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "kind": "best practice"
+              }
+            },
+            {
+              "id": "future-date",
+              "name": "future-date",
+              "shortDescription": {
+                "text": "a date later than the moment given with --now (a day alone is allowed one day more, for the time zones of the world); without --now the check does not run"
+              },
+              "help": {
+                "text": "Correct the date or the clock of the system that wrote it; an event cannot be recorded before it took place. (best practice)"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "kind": "best practice"
+              }
+            },
+            {
+              "id": "dates-out-of-order",
+              "name": "dates-out-of-order",
+              "shortDescription": {
+                "text": "the dates of one row come in the wrong order: harvest_date, cooling_date, receipt_date and event_date should not go back"
+              },
+              "help": {
+                "text": "Check each date against the business record; food cannot be received before it is harvested or packed before it is received. (best practice)"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "kind": "best practice"
+              }
+            },
+            {
+              "id": "receiving-without-shipping",
+              "name": "receiving-without-shipping",
+              "shortDescription": {
+                "text": "a receiving row whose lot code is not shipped by any shipping row of the file; a note, because a file of one firm holds the receipts of food shipped by others"
+              },
+              "help": {
+                "text": "If the file is meant to hold both sides of the move, add the shipping row or correct the lot code; if it holds one firm, no change is needed. (best practice)"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "kind": "best practice"
+              }
+            },
+            {
+              "id": "shipping-without-receiving",
+              "name": "shipping-without-receiving",
+              "shortDescription": {
+                "text": "a shipping row whose lot code is not received by any receiving row of the file; a note, because the recipient keeps its own records"
+              },
+              "help": {
+                "text": "If the file is meant to hold both sides of the move, add the receiving row or correct the lot code; if it holds one firm, no change is needed. (best practice)"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "kind": "best practice"
+              }
+            },
+            {
+              "id": "received-more-than-shipped",
+              "name": "received-more-than-shipped",
+              "shortDescription": {
+                "text": "the receiving rows of a lot code add up to more than the shipping rows of the same lot code in the same unit of measure"
+              },
+              "help": {
+                "text": "Check the quantity and the unit of the receiving row named, and whether a shipping row of that lot is missing from the file. (best practice)"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "kind": "best practice"
+              }
+            },
+            {
+              "id": "made-from-unknown-lot",
+              "name": "made-from-unknown-lot",
+              "shortDescription": {
+                "text": "a row for making a new product names an input lot code that no row of the file holds"
+              },
+              "help": {
+                "text": "Check the input lot code against the record of the receipt, or add the row that holds it; the input lot should be received, packed or made earlier in the file. (best practice)"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "kind": "best practice"
+              }
+            },
+            {
+              "id": "duplicate-row",
+              "name": "duplicate-row",
+              "shortDescription": {
+                "text": "a row whose cells are all the same as an earlier row, which counts one event twice"
+              },
+              "help": {
+                "text": "Delete the repeated row, or correct the cell that should differ. (best practice)"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "kind": "best practice"
+              }
+            }
+          ]
+        }
+      },
+      "artifacts": [
+        {
+          "location": {
+            "uri": "examples/bad/records.csv"
+          }
+        }
+      ],
+      "results": [
+        {
+          "ruleId": "column-missing",
+          "ruleIndex": 1,
+          "level": "error",
+          "message": {
+            "text": "The header has no \"harvester_contact\" column, but the rows of initial packing need the business name and phone number for the harvester (21 CFR 1.1330(a)(7)); 1 row is affected and none of them is reported for it one by one. Fix: Add the column named to the spreadsheet and fill it for the rows that need it; docs/inputs.md lists every column."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "input",
+            "subject": null
+          }
+        },
+        {
+          "ruleId": "column-duplicate",
+          "ruleIndex": 3,
+          "level": "error",
+          "message": {
+            "text": "The column \"Event Date\" has the same name as column 11 once case and separators are ignored; only the first is read. Fix: Keep one column of each name."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 519
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "input",
+            "subject": null
+          }
+        },
+        {
+          "ruleId": "date-invalid",
+          "ruleIndex": 11,
+          "level": "error",
+          "message": {
+            "text": "The event_date of row 1 (harvesting), \"03/04/2101\", is written like a date of the United States; write YYYY-MM-DD, or YYYY-MM-DDThh:mm:ss with a time zone, Z or +hh:mm, because the tool does not guess whether the first number is the month or the day. Fix: Write the date as YYYY-MM-DD: four digits for the year, two for the month and two for the day."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 2,
+                  "startColumn": 40
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "documented",
+            "subject": "LOT-H1"
+          }
+        },
+        {
+          "ruleId": "quantity-not-positive",
+          "ruleIndex": 13,
+          "level": "error",
+          "message": {
+            "text": "The quantity of row 2 (cooling) is zero; a quantity must be above zero. Fix: Write the quantity as a plain number above zero, such as 25 or 12.5, with no unit in the cell."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 3,
+                  "startColumn": 21
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "best practice",
+            "subject": null
+          }
+        },
+        {
+          "ruleId": "kde-missing",
+          "ruleIndex": 7,
+          "level": "error",
+          "message": {
+            "text": "Row 2 (cooling) has no reference document number, which 21 CFR 1.1325(b)(1)(vii) lists; the cell under \"reference_document_number\" is empty. Fix: Fill the element named in the cell named, from the business record the row comes from; docs/inputs.md says which column holds each element."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 3,
+                  "startColumn": 279
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "documented",
+            "subject": null
+          }
+        },
+        {
+          "ruleId": "event-type-unknown",
+          "ruleIndex": 6,
+          "level": "error",
+          "message": {
+            "text": "The event_type of row 3, \"Shiping\", is not one of the seven critical tracking events of 21 CFR 1.1310. Did you mean shipping? Its elements were not checked. Fix: Write one of \"harvesting\", \"cooling\", \"initial_packing\", \"first_land_based_receiving\", \"shipping\", \"receiving\" or \"transformation\" in the event_type column."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 4,
+                  "startColumn": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "documented",
+            "subject": null
+          }
+        },
+        {
+          "ruleId": "kde-missing",
+          "ruleIndex": 7,
+          "level": "error",
+          "message": {
+            "text": "Row 4 (initial packing) has no product description of the packed food, which 21 CFR 1.1330(a)(12) lists; the cell under \"product_description\" holds the placeholder \"n/a\". Fix: Fill the element named in the cell named, from the business record the row comes from; docs/inputs.md says which column holds each element."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 5,
+                  "startColumn": 24
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "documented",
+            "subject": "LOT-P3"
+          }
+        },
+        {
+          "ruleId": "quantity-unit-missing",
+          "ruleIndex": 12,
+          "level": "error",
+          "message": {
+            "text": "The quantity of row 4 (initial packing), 40, has no unit of measure in the unit_of_measure column. Fix: Give the unit of measure with the quantity, such as cases, pounds or kg, and the quantity with the unit."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 5,
+                  "startColumn": 41
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "documented",
+            "subject": "LOT-P3"
+          }
+        },
+        {
+          "ruleId": "secret-in-file",
+          "ruleIndex": 5,
+          "level": "error",
+          "message": {
+            "text": "A cell of the column \"product_description\" is shaped like a mnemonic. The tool never reads a seed or a key, and the value is not shown. Fix: Remove the value from the file and from wherever the file was copied, treat it as exposed and move what it controls to a new key. A traceability record names food, lots, places and documents, never the key of an account."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 10,
+                  "startColumn": 23
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "input",
+            "subject": null
+          }
+        },
+        {
+          "ruleId": "row-malformed",
+          "ruleIndex": 4,
+          "level": "error",
+          "message": {
+            "text": "Row 11 has 4 cells but the header has 31; the row was left out of every other check. A cell that holds a comma, a tab or a line end must be in double quotes. Fix: Put a cell that holds a comma, a tab or a line end in double quotes, and write a quote inside it as two quotes."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "input",
+            "subject": null
+          }
+        },
+        {
+          "ruleId": "future-date",
+          "ruleIndex": 14,
+          "level": "error",
+          "message": {
+            "text": "The event_date of row 12 (shipping), 2101-04-20, is after the moment given with --now. Fix: Correct the date or the clock of the system that wrote it; an event cannot be recorded before it took place."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 13,
+                  "startColumn": 58
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "best practice",
+            "subject": "LOT-Q1"
+          }
+        },
+        {
+          "ruleId": "column-unknown",
+          "ruleIndex": 2,
+          "level": "warning",
+          "message": {
+            "text": "The column \"harvest_dat\" is not a column the tool reads, so the values under it are not checked. Did you mean harvest_date? Fix: Correct the name to a column of docs/inputs.md, or leave the column in if it is for your own use."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 198
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "input",
+            "subject": null
+          }
+        },
+        {
+          "ruleId": "lot-code-at-harvest-or-cooling",
+          "ruleIndex": 9,
+          "level": "warning",
+          "message": {
+            "text": "Row 1 (harvesting) holds the lot code LOT-H1, but 21 CFR 1.1320 assigns a traceability lot code at initial packing, first land-based receiving or making a new product, and sets none for other activities. Fix: Leave the lot code out of the harvesting and cooling rows; the packer assigns it when it initially packs the food."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 2,
+                  "startColumn": 12
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "documented",
+            "subject": "LOT-H1"
+          }
+        },
+        {
+          "ruleId": "kde-conditional-missing",
+          "ruleIndex": 8,
+          "level": "warning",
+          "message": {
+            "text": "Row 1 (harvesting) has no field or other growing area (produce), or the container (aquacultured food), which 21 CFR 1.1325(a)(1)(v) and (vi) lists; the cell under \"growing_area\" is empty. Fix: Name the field, growing area or container as the grower does; leave it empty only for a food that is neither produce nor aquacultured."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 2,
+                  "startColumn": 56
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "documented",
+            "subject": "LOT-H1"
+          }
+        },
+        {
+          "ruleId": "dates-out-of-order",
+          "ruleIndex": 15,
+          "level": "warning",
+          "message": {
+            "text": "The receipt_date of row 4 (initial packing), 2101-03-05, is before the harvest_date, 2101-03-07. Fix: Check each date against the business record; food cannot be received before it is harvested or packed before it is received."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 5,
+                  "startColumn": 61
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "best practice",
+            "subject": "LOT-P3"
+          }
+        },
+        {
+          "ruleId": "lot-code-new-at-shipping",
+          "ruleIndex": 10,
+          "level": "warning",
+          "message": {
+            "text": "Row 5 (shipping) names the place it ships from as the source of the lot code LOT-Z9, but no row of the file assigns that lot code, and 21 CFR 1.1320(b) says not to establish a new lot code when shipping. Fix: Ship the food under the lot code it already has, and add the row of the event that assigned it; if the lot code came from elsewhere, name that place as the lot code source."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 6,
+                  "startColumn": 232
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "documented",
+            "subject": "LOT-Z9"
+          }
+        },
+        {
+          "ruleId": "received-more-than-shipped",
+          "ruleIndex": 18,
+          "level": "warning",
+          "message": {
+            "text": "By row 8 (receiving) the lot code LOT-Q1 is received 130 cases in total, more than the 120 cases that the shipping rows of the file ship. Fix: Check the quantity and the unit of the receiving row named, and whether a shipping row of that lot is missing from the file."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 9,
+                  "startColumn": 48
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "best practice",
+            "subject": "LOT-Q1"
+          }
+        },
+        {
+          "ruleId": "made-from-unknown-lot",
+          "ruleIndex": 19,
+          "level": "warning",
+          "message": {
+            "text": "Row 9 (making a new product) uses the input lot code LOT-X0, which no row of the file holds. Fix: Check the input lot code against the record of the receipt, or add the row that holds it; the input lot should be received, packed or made earlier in the file."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 10,
+                  "startColumn": 242
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "best practice",
+            "subject": "LOT-X0"
+          }
+        },
+        {
+          "ruleId": "duplicate-row",
+          "ruleIndex": 20,
+          "level": "warning",
+          "message": {
+            "text": "Row 10 has the same cells as row 8, on line 9, so one event is counted twice. Fix: Delete the repeated row, or correct the cell that should differ."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 11,
+                  "startColumn": 1
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "best practice",
+            "subject": "LOT-Q1"
+          }
+        },
+        {
+          "ruleId": "shipping-without-receiving",
+          "ruleIndex": 17,
+          "level": "note",
+          "message": {
+            "text": "Row 5 (shipping) ships the lot code LOT-Z9, which no receiving row of the file receives. Fix: If the file is meant to hold both sides of the move, add the receiving row or correct the lot code; if it holds one firm, no change is needed."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 6,
+                  "startColumn": 10
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "best practice",
+            "subject": "LOT-Z9"
+          }
+        },
+        {
+          "ruleId": "receiving-without-shipping",
+          "ruleIndex": 16,
+          "level": "note",
+          "message": {
+            "text": "Row 6 (receiving) receives the lot code LOT-R5, which no shipping row of the file ships. Fix: If the file is meant to hold both sides of the move, add the shipping row or correct the lot code; if it holds one firm, no change is needed."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/bad/records.csv",
+                  "index": 0
+                },
+                "region": {
+                  "startLine": 7,
+                  "startColumn": 11
+                }
+              }
+            }
+          ],
+          "properties": {
+            "kind": "best practice",
+            "subject": "LOT-R5"
+          }
+        }
+      ],
+      "properties": {
+        "notice": "This report is an input to a review of traceability records against 21 CFR Part 1 Subpart S: not legal advice and not an FDA certification, and not a guarantee that the records are true or that a firm meets the rule.",
+        "result": "FAIL - 11 findings at or above error (11 error, 8 warning, 2 info)",
+        "sources": [
+          "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-1/subpart-S"
+        ]
+      }
+    }
+  ]
+}

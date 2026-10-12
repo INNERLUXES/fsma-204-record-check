@@ -1,0 +1,52 @@
+fsma-204-record-check: examples/good/records.csv
+file: examples/good/records.csv (CSV, 15 lines, 4,820 bytes)
+rows: 14 (1 harvesting, 1 cooling, 3 initial packing, 1 first land-based receiving, 3 shipping, 3 receiving and 2 making a new product)
+columns: 31 in the header, 31 read, 0 not read
+lots: 5 traceability lot codes
+event dates: from 2101-03-01 to 2101-03-06
+now: 2101-03-10T12:00:00Z, from --now
+findings: 0
+
+Checks (21)
+
+  check                           level    kind           findings
+  file-unreadable                 error    input          0
+  column-missing                  error    input          0
+  column-unknown                  warning  input          0
+  column-duplicate                error    input          0
+  row-malformed                   error    input          0
+  secret-in-file                  error    input          0
+  event-type-unknown              error    documented     0
+  kde-missing                     error    documented     0
+  kde-conditional-missing         warning  documented     0
+  lot-code-at-harvest-or-cooling  warning  documented     0
+  lot-code-new-at-shipping        warning  documented     0
+  date-invalid                    error    documented     0
+  quantity-unit-missing           error    documented     0
+  quantity-not-positive           error    best practice  0
+  future-date                     error    best practice  0
+  dates-out-of-order              warning  best practice  0
+  receiving-without-shipping      info     best practice  0
+  shipping-without-receiving      info     best practice  0
+  received-more-than-shipped      warning  best practice  0
+  made-from-unknown-lot           warning  best practice  0
+  duplicate-row                   warning  best practice  0
+
+Findings (0)
+
+  none
+
+Event types (7)
+
+  event type                  rows  lot codes
+  harvesting                  1     0
+  cooling                     1     0
+  initial packing             3     3
+  first land-based receiving  1     1
+  shipping                    3     2
+  receiving                   3     2
+  making a new product        2     1
+
+This report is an input to a review of traceability records against 21 CFR Part 1 Subpart S: not legal advice and not an FDA certification, and not a guarantee that the records are true or that a firm meets the rule.
+
+RESULT: PASS - no finding at or above error
