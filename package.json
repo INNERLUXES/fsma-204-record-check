@@ -1,0 +1,52 @@
+{
+  "name": "fsma-204-record-check",
+  "version": "1.0.0",
+  "description": "FSMA 204 record check: reads an FDA electronic sortable spreadsheet of food traceability records (CSV or TSV, one row for each critical tracking event of 21 CFR Part 1 Subpart S: harvesting, cooling, initial packing, first land-based receiving, shipping, receiving and making a new product) and lists with its line the records that would not satisfy the rule: an unknown kind of event, a key data element that is empty for its kind of event (lot code, product description, quantity and unit, location descriptions, dates, reference document type and number), a lot code assigned where the rule says not to, dates that do not exist or lie after --now, a quantity that is not above zero or has no unit, a lot received in a larger amount than was shipped, receipts and shipments with no match, input lots that no row holds and repeated rows. Contacts nothing over the network, writes nothing. Not legal advice and not an FDA certification. Text, markdown, JSON and SARIF output, exit codes for a pipeline, no dependencies.",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "bin": {
+    "fsma-204-record-check": "bin/fsma-204-record-check.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "docs",
+    "examples",
+    "research",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.js\"",
+    "test:coverage": "node --test --experimental-test-coverage \"test/*.test.js\"",
+    "check": "node tools/check.mjs",
+    "example": "node tools/example.mjs"
+  },
+  "keywords": [
+    "fsma",
+    "fsma-204",
+    "food-traceability",
+    "fda",
+    "traceability",
+    "food-safety",
+    "supply-chain",
+    "blockchain",
+    "data-quality",
+    "csv",
+    "cli",
+    "nodejs"
+  ],
+  "author": "INNERLUXES <info@innerluxes.dev>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/INNERLUXES/fsma-204-record-check.git"
+  },
+  "homepage": "https://innerluxes.dev/blockchain/food-supply-chain"
+}
